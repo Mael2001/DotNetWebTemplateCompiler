@@ -1,6 +1,4 @@
-﻿using DateTimeCompiler.Core;
-
-namespace DotNetWeb.Core.Expressions
+﻿namespace DotNetWeb.Core.Expressions
 {
     public abstract class Expression
     {

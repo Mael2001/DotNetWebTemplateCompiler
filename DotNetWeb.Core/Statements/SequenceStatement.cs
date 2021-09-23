@@ -18,7 +18,9 @@
 
         public override string Generate(int tabs)
         {
-            throw new System.NotImplementedException();
+            var code = Statement1?.Generate(tabs);
+            code += Statement2?.Generate(tabs);
+            return code;
         }
 
         public override void Interpret()

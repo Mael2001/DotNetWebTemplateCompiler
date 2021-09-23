@@ -1,6 +1,4 @@
-﻿using DateTimeCompiler.Core.Statements;
-
-namespace DotNetWeb.Core.Statements
+﻿namespace DotNetWeb.Core.Statements
 {
     public abstract class Statement: Node, ISemanticValidation
     {

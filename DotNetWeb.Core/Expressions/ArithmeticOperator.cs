@@ -23,6 +23,9 @@ namespace DotNetWeb.Core.Expressions
             return Token.TokenType switch
             {
                 TokenType.Plus => LeftExpression.Evaluate() + RightExpression.Evaluate(),
+                TokenType.Slash => LeftExpression.Evaluate() / RightExpression.Evaluate(),
+                TokenType.Asterisk => LeftExpression.Evaluate() * RightExpression.Evaluate(),
+                TokenType.Hyphen => LeftExpression.Evaluate() - RightExpression.Evaluate(),
                 _ => throw new NotImplementedException()
             };
         }

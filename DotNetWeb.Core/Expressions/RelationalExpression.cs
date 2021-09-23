@@ -24,6 +24,8 @@ namespace DotNetWeb.Core.Expressions
             {
                 TokenType.GreaterThan => LeftExpression.Evaluate() > RightExpression.Evaluate(),
                 TokenType.LessThan => LeftExpression.Evaluate() < RightExpression.Evaluate(),
+                TokenType.Equal => LeftExpression.Evaluate() == RightExpression.Evaluate(),
+                TokenType.NotEqual => LeftExpression.Evaluate() != RightExpression.Evaluate(),
                 _ => throw new NotImplementedException()
             };
         }

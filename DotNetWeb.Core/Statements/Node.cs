@@ -1,4 +1,4 @@
-﻿namespace DateTimeCompiler.Core.Statements
+﻿namespace DotNetWeb.Core.Statements
 {
     public abstract class Node
     {

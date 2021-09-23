@@ -3,7 +3,6 @@ using DotNetWeb.Core.Interfaces;
 using System;
 using System.Linq.Expressions;
 using System.Reflection.Metadata;
-using DateTimeCompiler.Core.Statements;
 using DotNetWeb.Core.Expressions;
 using DotNetWeb.Core.Statements;
 using Constant = DotNetWeb.Core.Expressions.Constant;
@@ -25,7 +24,8 @@ namespace DotNetWeb.Parser
         {
             var program = Program();
             program.ValidateSemantic();
-            //program.Interpret();
+            program.Interpret();
+            Console.WriteLine(program.Generate(0));
         }
 
         private Statement Program()
@@ -73,7 +73,6 @@ namespace DotNetWeb.Parser
         private Statement Stmt()
         {
             Expression expression;
-            Statement statement;
             Match(TokenType.OpenBrace);
             switch (this.lookAhead.TokenType)
             {
@@ -82,18 +81,14 @@ namespace DotNetWeb.Parser
                     expression = Eq();
                     Match(TokenType.CloseBrace);
                     Match(TokenType.CloseBrace);
-                    break;
+                    return new AssignationStatement( new Id( expression.Token, expression.Type), expression as TypedExpression);
                 case TokenType.Percentage:
-                    statement = IfStmt();
-                    return statement;
+                    return IfStmt();
                 case TokenType.Hyphen:
-                    ForeachStatement();
-                    break;
+                    return ForeachStatement();
                 default:
                     throw new ApplicationException("Unrecognized statement");
             }
-
-            return null;
         }
 
         private Statement ForeachStatement()
@@ -102,13 +97,19 @@ namespace DotNetWeb.Parser
             Match(TokenType.Percentage);
             Match(TokenType.ForEeachKeyword);
             
-            var token = lookAhead;
+            var token1 = lookAhead;
             Match(TokenType.Identifier);
-            var id = new Id(token, Type.FloatList);
-            EnvironmentManager.AddVariable(token.Lexeme, id);
+            var id1 = new Id(token1, Type.FloatList);
+            EnvironmentManager.AddVariable(token1.Lexeme, id1);
 
             Match(TokenType.InKeyword);
+            var token2 = lookAhead;
             Match(TokenType.Identifier);
+            if (EnvironmentManager.GetSymbolForEvaluation(token2.Lexeme)==null)
+            {
+                throw new ApplicationException($"Variable {token2.Lexeme} Doesn't Exist");
+            }
+
             Match(TokenType.Percentage);
             Match(TokenType.CloseBrace);
             var statement = Template();
@@ -117,7 +118,7 @@ namespace DotNetWeb.Parser
             Match(TokenType.EndForEachKeyword);
             Match(TokenType.Percentage);
             Match(TokenType.CloseBrace);
-            return statement;
+            return new ForeachStatement(token1,token2,statement);
         }
 
         private Statement IfStmt()
@@ -216,8 +217,6 @@ namespace DotNetWeb.Parser
                     ExprList();
                     Match(TokenType.CloseBracket);
                     break;
-                case TokenType.CloseBrace:
-                    break;
                 default:
                     var symbol = EnvironmentManager.GetSymbol(this.lookAhead.Lexeme);
                     Match(TokenType.Identifier);
@@ -235,8 +234,7 @@ namespace DotNetWeb.Parser
                 return expression;
             }
             Match(TokenType.Comma);
-            return ExprList();
-            //return new SequenceExpression(expression, ExprList());
+            return new SequenceExpression(expression, ExprList());
         }
 
         private Statement Init()
