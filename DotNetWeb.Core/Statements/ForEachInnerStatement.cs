@@ -15,7 +15,7 @@ namespace DotNetWeb.Core.Statements
         public override string Generate(int tabs)
         {
             var code = GetCodeInit(tabs);
-            code += $"{Expression.Evaluate()}";
+            code += $"<div class=\"container\">{Expression.Evaluate()}</div>";
             return code;
         }
 

@@ -23,6 +23,7 @@ namespace DotNetWeb.Parser
         }
         public void Parse()
         {
+            EnvironmentManager.PushContext();
             var program = Program();
             program.ValidateSemantic();
             program.Interpret();
@@ -58,12 +59,12 @@ namespace DotNetWeb.Parser
             code += "</html>";
             Console.WriteLine(program.Generate(1));
             System.IO.File.WriteAllText(@"C:\Users\Public\code.html", code);
+            EnvironmentManager.PopContext();
 
         }
 
         private Statement Program()
         {
-            EnvironmentManager.PushContext();
             return new SequenceStatement(Init(), Template());
         }
 

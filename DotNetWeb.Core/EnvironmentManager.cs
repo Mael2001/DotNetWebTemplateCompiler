@@ -18,12 +18,12 @@ namespace DotNetWeb.Core
             return env;
         }
 
-        /*public static Environment PopContext()
+        public static Environment PopContext()
         {
             var lastContext = _contexts.Last();
             _currentIndex--;
             return lastContext;
-        }*/
+        }
 
 
         public static Symbol GetSymbol(string lexeme)
