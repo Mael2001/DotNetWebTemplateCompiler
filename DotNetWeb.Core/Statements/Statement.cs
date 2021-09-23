@@ -1,6 +1,8 @@
-﻿namespace DotNetWeb.Core.Statements
+﻿using DotNetWeb.Core.Interfaces;
+
+namespace DotNetWeb.Core.Statements
 {
-    public abstract class Statement: Node, ISemanticValidation
+    public abstract class Statement: ISemanticValidation
     {
         public abstract void Interpret();
 

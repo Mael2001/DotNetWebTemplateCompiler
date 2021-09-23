@@ -22,7 +22,7 @@ namespace DotNetWeb.Core.Expressions
 
         public override string Generate()
         {
-            return Token.Lexeme;
+            return "<div class=\"container\">"+Token.Lexeme +"</div>";
         }
 
         public override Type GetExpressionType()

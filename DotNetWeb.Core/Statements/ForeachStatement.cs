@@ -26,11 +26,9 @@ namespace DotNetWeb.Core.Statements
 
         public override string Generate(int tabs)
         {
-            var code = $"{Token2.Lexeme}.foreach(";
-            code += $"function({Token1.Lexeme})";
-            code += "{";
-            code += $"{Statement.Generate(tabs + 1)}";
-            code += "}";
+            var code = Statement.Generate(tabs);
+            code += Statement.Generate(tabs + 1);
+            
             return code;
         }
     }

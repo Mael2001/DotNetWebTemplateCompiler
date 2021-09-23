@@ -17,7 +17,7 @@ namespace DotNetWeb.Core.Statements
         public override string Generate(int tabs)
         {
             var code = GetCodeInit(tabs);
-            code += $"{Id.Generate()} = {Expression.Generate()}{Environment.NewLine}";
+            code += $"<ul>{Id.Generate()} = {Expression.Generate()}</ul>{Environment.NewLine}";
             return code;
         }
 

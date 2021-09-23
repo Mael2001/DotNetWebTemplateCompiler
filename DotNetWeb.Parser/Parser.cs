@@ -1,6 +1,7 @@
 ﻿using DotNetWeb.Core;
 using DotNetWeb.Core.Interfaces;
 using System;
+using System.IO;
 using System.Linq.Expressions;
 using System.Reflection.Metadata;
 using DotNetWeb.Core.Expressions;
@@ -25,7 +26,39 @@ namespace DotNetWeb.Parser
             var program = Program();
             program.ValidateSemantic();
             program.Interpret();
-            Console.WriteLine(program.Generate(0));
+            var code = "<html>";
+            code += "<header>";
+            code += "<!-- CSS only -->" +
+                    "<link href = \"https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css\" rel = \"stylesheet\" integrity = \"sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU\" crossorigin = \"anonymous\"> ";
+            code += "<!-- JavaScript Bundle with Popper -->" +
+                    "<script src = \"https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js\" integrity = \"sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ\" crossorigin = \"anonymous\" ></script> ";
+            code += "</header>";
+            code += "<body class=\"container\">";
+            code += "<nav class=\"navbar navbar-expand - lg navbar - light bg - light\">" +
+                    "<a class=\"navbar-brand\" href=\"#\">Navbar</a>" +
+                    "<button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">" +
+                    "<span class=\"navbar-toggler-icon\"></span></button>" +
+                    "<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\"><ul class=\"navbar-nav mr-auto\">" +
+                    "<li class=\"nav-item active\">" +
+                    "<a class=\"nav-link\" href=\"#\">Home<span class=\"sr-only\">(current)</span></a></li>" +
+                    "<li class=\"nav-item\"><a class=\"nav-link\" href=\"#\">Link</a></li><li class=\"nav-item dropdown\">" +
+                    "<a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"navbarDropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Dropdown</a>" +
+                    "<div class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">" +
+                    "<a class=\"dropdown-item\" href=\"#\">Action</a>" +
+                    "<a class=\"dropdown-item\" href=\"#\">Another action</a>" +
+                    "<div class=\"dropdown-divider\"></div>" +
+                    "<a class=\"dropdown-item\" href=\"#\">Something else here</a></div></li>" +
+                    "<li class=\"nav-item\"><a class=\"nav-link disabled\" href=\"#\">Disabled</a></li></ul>" +
+                    "<form class=\"form-inline my-2 my-lg-0\">" +
+                    "<input class=\"form-control mr-sm-2\" type=\"search\" placeholder=\"Search\" aria-label=\"Search\"></nav>";
+            code += "<div =\"container\">";
+            code += program.Generate(1);
+            code += "</div>";
+            code += "</body>";
+            code += "</html>";
+            Console.WriteLine(program.Generate(1));
+            System.IO.File.WriteAllText(@"C:\Users\Public\code.html", code);
+
         }
 
         private Statement Program()
@@ -81,7 +114,7 @@ namespace DotNetWeb.Parser
                     expression = Eq();
                     Match(TokenType.CloseBrace);
                     Match(TokenType.CloseBrace);
-                    return new AssignationStatement( new Id( expression.Token, expression.Type), expression as TypedExpression);
+                    return new ForEachInnerStatement( expression as TypedExpression);
                 case TokenType.Percentage:
                     return IfStmt();
                 case TokenType.Hyphen:
@@ -214,16 +247,15 @@ namespace DotNetWeb.Parser
                     return constant;
                 case TokenType.OpenBracket:
                     Match(TokenType.OpenBracket);
-                    ExprList();
+                    var compression = ExprList();
                     Match(TokenType.CloseBracket);
-                    break;
+                    return compression;
                 default:
                     var symbol = EnvironmentManager.GetSymbol(this.lookAhead.Lexeme);
                     Match(TokenType.Identifier);
                     return symbol.Id;
             }
-
-            return null;
+            
         }
 
         private Expression ExprList()
@@ -271,9 +303,22 @@ namespace DotNetWeb.Parser
             Match(TokenType.Assignation);
             var expression = Eq();
             Match(TokenType.SemiColon);
+            if (expression is SequenceExpression)
+            {
+                //return ListAssign(expression as SequenceExpression);
+            }
             return new AssignationStatement(id, expression as TypedExpression);
         }
 
+        private Statement ListAssign(SequenceExpression expression)
+        {
+            /*return new SequenceStatement(
+                new AssignationStatement(new Id(expression.Token, expression.Type),
+                    expression.Expression1 as TypedExpression),
+                new AssignationStatement(new Id(expression.Token, expression.Type),
+                    expression.Expression2 as TypedExpression));*/
+            return null;
+        }
         private void Decls()
         {
             Decl();
