@@ -4,9 +4,9 @@ namespace DotNetWeb.Core
 {
     public class Type : IEquatable<Type>
     {
-        public string Lexeme { get; private set; }
+        public string Lexeme { get; }
 
-        public TokenType TokenType { get; private set; }
+        public TokenType TokenType { get; }
         public Type(string lexeme, TokenType tokenType)
         {
             Lexeme = lexeme;

@@ -301,21 +301,21 @@ namespace DotNetWeb.Parser
             Match(TokenType.Assignation);
             var expression = Eq();
             Match(TokenType.SemiColon);
-            if (expression is SequenceExpression)
-            {
-                //return ListAssign(expression as SequenceExpression);
-            }
-            return new AssignationStatement(id, expression as TypedExpression);
+            return expression is SequenceExpression sequenceExpression
+                ? ListAssign(sequenceExpression)
+                : new AssignationStatement(id, expression as TypedExpression);
         }
 
-       /* private Statement ListAssign(SequenceExpression expression)
-        {
+       private Statement ListAssign(SequenceExpression expression)
+       {
             return new SequenceStatement(
-                new AssignationStatement(new Id(expression.Token, expression.Type),
+                new AssignationStatement(new Id(expression.Expression1.Token, expression.Expression1.Type),
                     expression.Expression1 as TypedExpression),
-                new AssignationStatement(new Id(expression.Token, expression.Type),
-                    expression.Expression2 as TypedExpression));
-        }*/
+                expression.Expression2 is SequenceExpression sequenceExpression 
+                    ? ListAssign(sequenceExpression ) 
+                    : new AssignationStatement(new Id(expression.Expression2.Token, expression.Expression2.Type),
+                        expression.Expression2 as TypedExpression));
+        }
         private void Decls()
         {
             Decl();

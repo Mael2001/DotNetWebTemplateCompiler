@@ -35,7 +35,7 @@ namespace DotNetWeb.Core.Expressions
             if (LeftExpression.GetExpressionType() == Type.String &&
                 RightExpression.GetExpressionType() != Type.String)
             {
-                return $"{LeftExpression.Generate()} {Token.Lexeme} str({RightExpression.Generate()})";
+                return $"{LeftExpression.Generate()} {Token.Lexeme} {RightExpression.Generate()})";
             }
 
             return $"{LeftExpression.Generate()} {Token.Lexeme} {RightExpression.Generate()}";
