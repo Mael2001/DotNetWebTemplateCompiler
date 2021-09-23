@@ -7,7 +7,6 @@
     a = 5;
     b = 5.68;
     x = 'test';
-    arr = ['one', 'two', 'three'];
 %}
 
 <div>
@@ -15,7 +14,7 @@
 </div>
 
 <div>
-{%if a > 0 %} <b>{{ ReprintCount }}</b>{% endif %}
+{%if a > 0 %} <b>{{ a }}</b>{% endif %}
 </div>
 <ul>
 {-%foreach element in arr %}
